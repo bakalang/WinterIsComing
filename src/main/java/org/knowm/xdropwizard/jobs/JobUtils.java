@@ -8,11 +8,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.knowm.xdropwizard.business.SecurityTrade;
 import org.knowm.xdropwizard.business.SecurityTradeDAO;
+import org.knowm.xdropwizard.business.StockDailyTransaction;
+import org.knowm.xdropwizard.business.StockDailyTransactionDAO;
 import org.knowm.xdropwizard.constance.commonConstance;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by SKYE on 2016/7/15.
@@ -21,7 +26,11 @@ public class JobUtils implements commonConstance {
 
     private static final DateTime now = new org.joda.time.DateTime();
 
-    public static String getStockMonthTransaction(String url) {
+    public static String getStockMonthTransaction(String url, String stockId) {
+
+        List<String> tmpList = StockDailyTransactionDAO.getStockDailyTransactionList(stockId);
+        List<StockDailyTransaction> sdtList = new ArrayList<StockDailyTransaction>();
+        StockDailyTransaction sdt = null;
         Document doc = null;
         try {
             doc = Jsoup.connect(url).get();
@@ -32,14 +41,28 @@ public class JobUtils implements commonConstance {
                 StringBuilder sb = new StringBuilder();
                 while (dd.hasNext()) {
                     Element dd_e = dd.next();
-                    sb.append(Jsoup.parse(dd_e.html()).text()).append("|");
+                    sb.append(Jsoup.parse(dd_e.html()).text()).append(" ");
                 }
-                System.out.println(">> "+sb.toString());
 
                 //check if regular data
-                String[] dataArray = sb.toString().split("|");
+                String[] dataArray = sb.toString().trim().split(" ");
                 if(dataArray[0].length() == 9){
-                    //check or insert
+                    String commonEraDate = toCommonEra(dataArray[0]);
+
+                    if(!tmpList.contains(commonEraDate)){
+                        sdt = new StockDailyTransaction();;
+                        sdt.setTransactionDate(YYYYMMDD.parseDateTime(commonEraDate).toDate());
+                        sdt.setStockId(stockId);
+                        sdt.setTradeVolume(getBigDecimal(dataArray[1], 0));
+                        sdt.setTurnover(getBigDecimal(dataArray[2], 0));
+                        sdt.setOpen(getBigDecimal(dataArray[3],2));
+                        sdt.setDayHigh(getBigDecimal(dataArray[4], 2));
+                        sdt.setDayLow(getBigDecimal(dataArray[5], 2));
+                        sdt.setClose(getBigDecimal(dataArray[6], 2));
+                        sdt.setGrossSpread(getBigDecimal(dataArray[7], 2));
+                        sdt.setTransactionCount(getBigDecimal(dataArray[8], 0));
+                        sdtList.add(sdt);
+                    }
 
                 }
 
@@ -49,8 +72,12 @@ public class JobUtils implements commonConstance {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println(">>>"+stockId+" , "+sdtList.size());
+        StockDailyTransactionDAO.insertBatch(sdtList);
         return null;
     }
+
 
     public static String getSecurityCompany(String url) {
         String security = "1040";
@@ -62,7 +89,7 @@ public class JobUtils implements commonConstance {
             // get date
             String tmpDate = newsHeadlines.select(".t11").text();
             System.out.println(tmpDate.substring(tmpDate.length() - 5, tmpDate.length()));
-            MMdd.print(now).endsWith(tmpDate.substring(tmpDate.length()-5, tmpDate.length()));
+            MMDD.print(now).endsWith(tmpDate.substring(tmpDate.length()-5, tmpDate.length()));
 
 
             Iterator<Element> rr = newsHeadlines.select("tr").iterator();
@@ -98,12 +125,13 @@ public class JobUtils implements commonConstance {
                         i++;
 
                         if (i == 3) {
-                            SecurityTradeDAO.insertSecurityTrade(s);
                             System.out.println("insert =>" + s.toString());
+                            SecurityTradeDAO.insertSecurityTrade(s);
                         }
                     }
                     //check stock transaction
-                    //getStockMonthTransaction(getTransationURI(now.getYear(), now.getMonthOfYear(), stockId));
+                    if(stockId != null)
+                        getStockMonthTransaction(getTransationURI(now.getYear(), now.getMonthOfYear(), stockId), stockId);
 
                     //http://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_2882.tw&d=20160714&json=1
                     //http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/genpage/Report201607/201607_F3_1_8_2882.php?STK_NO=2882&myear=2016&mmon=07
@@ -124,6 +152,7 @@ public class JobUtils implements commonConstance {
         tmp = tmp.replace("%", "");
         tmp = tmp.replace(",", "");
         tmp = tmp.replace("+", "");
+        tmp = tmp.replace("X", "");
 
         BigDecimal b = BigDecimal.valueOf(Double.valueOf(tmp));
         b = b.setScale(scale);
@@ -151,14 +180,29 @@ public class JobUtils implements commonConstance {
         sb.append("&myear=").append(year).append("&mmon=").append(monthString);
         return sb.toString();
     }
+
+
+    private static String toCommonEra(String s) {
+
+        String tmpYear = s.substring(0, 3).trim();
+        String cYear = String.valueOf(Integer.valueOf(tmpYear)+1911);
+
+//        return YYYYMMDD.parseDateTime(cYear+s.substring(3, s.length())).toDate();
+        return cYear+s.substring(3, s.length());
+    }
+
+
     public static void main(String[] args) {
 //        System.out.println(getC("3576新日光"));
 
-        //getStockMonthTransaction(getTransationURI(2016, 07, "2882"));
+        getStockMonthTransaction(getTransationURI(2016, 07, "2882"), "2882");
 
 //        String formatStr = "%02d";
 //        System.out.println(String.format(formatStr, 12));
 
-        getSecurityCompany("http://jsjustweb.jihsun.com.tw/z/zg/zgb/zgb0_1040_1.djhtm");
+//        getSecurityCompany("http://jsjustweb.jihsun.com.tw/z/zg/zgb/zgb0_1040_1.djhtm");
+
+
     }
+
 }
