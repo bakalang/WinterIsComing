@@ -29,6 +29,7 @@ import org.knowm.dropwizard.sundial.tasks.UnlockSundialSchedulerTask;
 import org.knowm.xdropwizard.health.TemplateHealthCheck;
 import org.knowm.xdropwizard.jobs.JobUtils;
 import org.knowm.xdropwizard.manager.YankManager;
+import org.knowm.xdropwizard.resources.FBResource;
 import org.knowm.xdropwizard.resources.HelloWorldResource;
 import org.knowm.xdropwizard.resources.YankBookResource;
 import org.slf4j.Logger;
@@ -78,6 +79,7 @@ public class XDropWizardApplication extends Application<XDropWizardApplicationCo
     final String template = configuration.getTemplate();
     final String defaultName = configuration.getDefaultName();
     environment.jersey().register(new HelloWorldResource(template, defaultName));
+    environment.jersey().register(new FBResource());
     environment.healthChecks().register("TemplateHealth", new TemplateHealthCheck(template));
 
     // MANAGERS /////////////////////////
@@ -86,6 +88,7 @@ public class XDropWizardApplication extends Application<XDropWizardApplicationCo
     YankManager ym = new YankManager(configuration.getYankConfiguration()); // A DropWizard Managed Object
     environment.lifecycle().manage(ym); // Assign the management of the object to the Service
     environment.jersey().register(new YankBookResource());
+    environment.jersey().register(new FBResource());
     environment.jersey().register(new JobUtils());
 
     // TASKS ////////////////////////////

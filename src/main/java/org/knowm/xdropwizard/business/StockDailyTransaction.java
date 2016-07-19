@@ -99,4 +99,21 @@ public class StockDailyTransaction {
     public void setTransactionCount(BigDecimal transactionCount) {
         this.transactionCount = transactionCount;
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(transactionDate).append("|");
+        sb.append(stockId).append("|");
+        sb.append(tradeVolume).append("|");
+        sb.append(turnover).append("|");
+        sb.append(open).append("|");
+        sb.append(close).append("|");
+        sb.append(dayHigh).append("|");
+        sb.append(dayLow).append("|");
+        sb.append(grossSpread).append("|");
+        sb.append(transactionCount).append("|");
+        return  sb.toString();
+    }
+
+
 }

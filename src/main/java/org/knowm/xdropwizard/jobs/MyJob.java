@@ -31,20 +31,18 @@ import org.jsoup.nodes.Document;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class MyJob extends Job  {
+public class MyJob extends Job implements commonConstance  {
 
-    private final Logger logger = LoggerFactory.getLogger(MyJob.class);
-    public static final String URL = "http://jsjustweb.jihsun.com.tw/z/zg/zgb/zgb0_1040_1.djhtm";
+    private final Logger log = LoggerFactory.getLogger(MyJob.class);
+
 
     @Override
     public void doRun() throws JobInterruptException {
-
-
-        logger.info("MyJob start --> " + URL);
-        JobUtils.getSecurityCompany(URL);
-
+        log.info("MyJob start");
+        for(String sid : SECURITY_MAP.keySet()){
+            log.info("do security "+sid+", "+SECURITY_MAP.get(sid));
+            JobUtils.getSecurityCompany(sid, log);
+        }
     }
-
-
 }
 
