@@ -21,9 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 /**
@@ -33,7 +31,7 @@ import java.util.Random;
 @Produces(MediaType.APPLICATION_JSON)
 public class FBResource implements commonConstance {
 
-    private final String accessToken = "EAACEdEose0cBADMVtgaZC0EXRm1HTNrDijyQXFu17W1UBZAgpInyZARP0ZAgzZBHW03bFudi9e6PPzXSlb9dH8Euxqy77wbfvsaWb5KcReQRIKAUqoRDNV7wSn14CBJfWHzLvnm4cm7jIRXeUMz8eGZCozaq8vWZB9ZBUQsGZC1dyGgZDZD";
+    private final String accessToken = "EAACEdEose0cBABH6FdCyw789dZAnemLloBHnwnnXVspDfypHo7D2kASnKy8ZCneDbje4nYnIYmFVBrfRpT5TqRnZCm8E8pMzWEk8K5jHi4LuZC6sTq9N7jkFElZCIl0wgZAZAZAqQzcS6EKmHBdqHOP6bTNXVWEmSUeNCIuNcK7MPwZDZD";
     private Random RANDOM = new Random();
 
     @GET
@@ -109,7 +107,6 @@ public class FBResource implements commonConstance {
         GetMethod fileGet = new GetMethod(url);
         HttpClient client = new HttpClient();
         BufferedReader streamReader = null;
-        ObjectMapper mapper = new ObjectMapper();
         JSONObject returnObject = null;
         try
         {

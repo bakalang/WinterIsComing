@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.knowm</groupId>
-  <artifactId>xdropwizard</artifactId>
-  <name>XDropwizard Webservice</name>
+  <groupId>org.hidocan</groupId>
+  <artifactId>winteriscoming</artifactId>
+  <name>Stock Service</name>
   <version>0.9.1-SNAPSHOT</version>
-  <description>Dropwizard webservice/webapp skeleton containing Knowm OSS projects and various other web technologies</description>
-  <url>http://knowm.org/open-source/</url>
   <developers>
     <developer>
       <name>Tim Molter</name>
     </developer>
   </developers>
-  <organization>
-    <name>Knowm Inc.</name>
-    <url>http://knowm.org/open-source/</url>
-  </organization>
   <build>
     <finalName>xdropwizard</finalName>
     <plugins>
