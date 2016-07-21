@@ -24,6 +24,13 @@
  			<name>MyJob</name>
  			<job-class>org.knowm.xdropwizard.jobs.MyJob</job-class>
  		</job>
+		<trigger>
+			<cron>
+				<name>MyJob-Trigger</name>
+				<job-name>MyJob</job-name>
+				<cron-expression>0 0 0/2 * * ?</cron-expression>
+			</cron>
+		</trigger>
 
 	</schedule>
 

@@ -21,6 +21,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.knowm.sundial.Job;
+import org.knowm.sundial.annotations.CronTrigger;
 import org.knowm.sundial.exceptions.JobInterruptException;
 import org.knowm.xdropwizard.business.SecurityTrade;
 import org.knowm.xdropwizard.constance.commonConstance;
