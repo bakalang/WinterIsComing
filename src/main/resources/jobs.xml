@@ -28,7 +28,7 @@
 			<cron>
 				<name>MyJob-Trigger</name>
 				<job-name>MyJob</job-name>
-				<cron-expression>0 0 0/2 * * ?</cron-expression>
+				<cron-expression>0 0 6 1/1 * ? *</cron-expression>
 			</cron>
 		</trigger>
 
