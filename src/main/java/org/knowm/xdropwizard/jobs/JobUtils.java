@@ -96,7 +96,7 @@ public class JobUtils implements commonConstance {
             String tmpDate = newsHeadlines.select(".t11").text();
             System.out.println(">>"+MMDD.print(now));
             System.out.println(">>"+tmpDate.substring(tmpDate.length() - 5, tmpDate.length()));
-            if( !MMDD.print(now).endsWith(tmpDate.substring(tmpDate.length()-5, tmpDate.length()))){
+            if( MMDD.print(now).endsWith(tmpDate.substring(tmpDate.length()-5, tmpDate.length()))){
                 System.out.println(tmpDate.substring(tmpDate.length() - 5, tmpDate.length())+", data updated !");
                 return null;
             }
