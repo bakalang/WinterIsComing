@@ -6,10 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.knowm.xdropwizard.business.SecurityTrade;
-import org.knowm.xdropwizard.business.SecurityTradeDAO;
-import org.knowm.xdropwizard.business.StockDailyTransaction;
-import org.knowm.xdropwizard.business.StockDailyTransactionDAO;
+import org.knowm.xdropwizard.business.*;
 import org.knowm.xdropwizard.constance.commonConstance;
 import org.slf4j.Logger;
 
@@ -94,12 +91,15 @@ public class JobUtils implements commonConstance {
 
             // get date
             String tmpDate = newsHeadlines.select(".t11").text();
-            System.out.println(">>"+MMDD.print(now));
-            System.out.println(">>"+tmpDate.substring(tmpDate.length() - 5, tmpDate.length()));
-            if( !MMDD.print(now).endsWith(tmpDate.substring(tmpDate.length()-5, tmpDate.length()))){
-                System.out.println(tmpDate.substring(tmpDate.length() - 5, tmpDate.length())+", data updated !");
+
+            String updateDate = tmpDate.substring(tmpDate.length() - 5, tmpDate.length());
+            String dbDate = YYYYMMDD.print(SecurityUpToDateDAO.getSecurityCurrentDate(security).getTime());
+            System.out.println(">> "+security+" db = "+dbDate+", page "+updateDate);
+
+            if (dbDate == null )
                 return null;
-            }
+            if (dbDate.endsWith(updateDate))
+                return null;
 
 
             Iterator<Element> rr = newsHeadlines.select("tr").iterator();
@@ -146,12 +146,14 @@ public class JobUtils implements commonConstance {
                     //http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/genpage/Report201607/201607_F3_1_8_2882.php?STK_NO=2882&myear=2016&mmon=07
                     //http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/genpage/Report201607/201607_F3_1_8_2882.php?STK_NO=2882&myear=2016&mmon=07
                 }
-
             }
+
+            // insert SecurityUpToDateDAO
+            SecurityUpToDateDAO.insertSecurityCurrentDate(security, now.toDate());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
