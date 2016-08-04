@@ -8,7 +8,7 @@ import java.util.Date;
 public class SecurityUpToDate {
 
     private String securityId;
-    private Date securityCurrentDate;
+    private Date securityCurrent;
 
     public String getSecurityId() {
         return securityId;
@@ -18,11 +18,11 @@ public class SecurityUpToDate {
         this.securityId = securityId;
     }
 
-    public Date getSecurityCurrentDate() {
-        return securityCurrentDate;
+    public Date getSecurityCurrent() {
+        return securityCurrent;
     }
 
-    public void setSecurityCurrentDate(Date securityCurrentDate) {
-        this.securityCurrentDate = securityCurrentDate;
+    public void setSecurityCurrent(Date securityCurrent) {
+        this.securityCurrent = securityCurrent;
     }
 }

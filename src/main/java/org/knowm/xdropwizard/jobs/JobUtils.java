@@ -2,6 +2,7 @@ package org.knowm.xdropwizard.jobs;
 
 
 import org.joda.time.DateTime;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,7 +13,9 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -80,27 +83,49 @@ public class JobUtils implements commonConstance {
         return null;
     }
 
+    public static Document jsoupRetry( String url) throws IOException {
+
+        Document doc = null;
+        int i =0;
+        while(i<3){
+            Connection connection = Jsoup.connect(url)
+                    .userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21")
+                    .timeout(10000);
+            Connection.Response rsp = connection.execute();
+            System.out.println(">> "+url+" (retry "+i+"), statusCode="+rsp.statusCode());
+            if(rsp.statusCode() == 200) {
+                doc = connection.get();
+                break;
+            }else{
+                i++;
+            }
+        }
+        return doc;
+
+    }
 
     public static String getSecurityCompany(String security, Logger log) {
 
         String url = SECURITY_MAP.get(security);
-        Document doc = null;
         try {
-            doc = Jsoup.connect(url).get();
+            Document doc = jsoupRetry(url);
+            if(doc == null){
+                log.info(">> doc GG");
+                return null;
+            }
             Elements newsHeadlines = doc.select(".t01");
 
             // get date
             String tmpDate = newsHeadlines.select(".t11").text();
+            String updateDate = now.getYear()+"/"+tmpDate.substring(tmpDate.length() - 5, tmpDate.length());
 
-            String updateDate = tmpDate.substring(tmpDate.length() - 5, tmpDate.length());
-            String dbDate = YYYYMMDD.print(SecurityUpToDateDAO.getSecurityCurrentDate(security).getTime());
-            System.out.println(">> "+security+" db = "+dbDate+", page "+updateDate);
+            SecurityUpToDate utd = SecurityUpToDateDAO.getSecurityCurrentDate(security);
 
-            if (dbDate == null )
+
+            if(!YYYYMMDD.parseDateTime(updateDate).toDate().after(utd.getSecurityCurrent())){
+                log.info(YYYYMMDD.parseDateTime(updateDate).toDate() +" "+utd.getSecurityCurrent());
                 return null;
-            if (dbDate.endsWith(updateDate))
-                return null;
-
+            }
 
             Iterator<Element> rr = newsHeadlines.select("tr").iterator();
             while (rr.hasNext()) {
@@ -134,7 +159,7 @@ public class JobUtils implements commonConstance {
                         i++;
 
                         if (i == 3) {
-                            System.out.println("insert =>" + s.toString());
+                            log.trace("insert =>" + s.toString());
                             SecurityTradeDAO.insertSecurityTrade(s);
                         }
                     }
@@ -148,12 +173,15 @@ public class JobUtils implements commonConstance {
                 }
             }
 
-            // insert SecurityUpToDateDAO
-            SecurityUpToDateDAO.insertSecurityCurrentDate(security, now.toDate());
-
+            if(null == utd ) {
+                SecurityUpToDateDAO.insertSecurityCurrentDate(security, YYYYMMDD.print(now));
+            }else{
+                SecurityUpToDateDAO.updateSecurityCurrentDate(security, YYYYMMDD.print(now));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        log.info(security+" finish!");
         return null;
     }
 
