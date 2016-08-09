@@ -10,23 +10,24 @@ import java.util.List;
  */
 public class SecurityUpToDateDAO {
 
-    public static SecurityUpToDate getSecurityCurrentDate(String securityId) {
+    public static Date getSecurityCurrentDate(String securityId) {
 
         Object[] params = new Object[] {securityId};
-        String sql = "SELECT * FROM SECURITY_UP_TO_DATE WHERE SECURITY_ID = ? ";
-        return Yank.queryBean(sql, SecurityUpToDate.class, params);
+        String sql = "SELECT SECURITY_CURRENT FROM SECURITY_UP_TO_DATE WHERE SECURITY_ID = ? ";
+//        return Yank.queryBean(sql, Date.class, params);
+        return Yank.queryColumn(sql, "SECURITY_CURRENT", Date.class, params).get(0);
     }
 
-    public static int insertSecurityCurrentDate(String securityId, String dateString) {
+    public static int insertSecurityCurrentDate(String securityId, Date date) {
 
-        Object[] params = new Object[] {securityId, dateString};
+        Object[] params = new Object[] {securityId, date};
         String SQL = "INSERT INTO SECURITY_UP_TO_DATE (SECURITY_ID, SECURITY_CURRENT) VALUES (?, ?)";
         return Yank.execute(SQL, params);
     }
 
-    public static int updateSecurityCurrentDate(String securityId, String dateString) {
+    public static int updateSecurityCurrentDate(String securityId, Date date) {
 
-        Object[] params = new Object[] {dateString, securityId};
+        Object[] params = new Object[] {date, securityId};
         String SQL = "UPDATE SECURITY_CURRENT SET SECURITY_CURRENT_DATE = ? WHERE SECURITY_ID = ?";
         return Yank.execute(SQL, params);
     }

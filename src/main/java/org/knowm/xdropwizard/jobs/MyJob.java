@@ -42,7 +42,8 @@ public class MyJob extends Job implements commonConstance  {
         log.info("MyJob start");
         for(String sid : SECURITY_MAP.keySet()){
             log.info("do security "+sid+", "+SECURITY_MAP.get(sid));
-            JobUtils.getSecurityCompany(sid, log);
+            JobUtils j = new JobUtils(log);
+            j.startSecurityCompany(sid);
         }
     }
 }

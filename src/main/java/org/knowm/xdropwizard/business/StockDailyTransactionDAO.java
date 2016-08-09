@@ -2,6 +2,7 @@ package org.knowm.xdropwizard.business;
 
 import org.knowm.yank.Yank;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -9,12 +10,14 @@ import java.util.List;
  */
 public class StockDailyTransactionDAO {
 
-    public static List<String> getStockDailyTransactionList(String stockId) {
+    public static List<Date> getStockDailyTransactionList(String stockId) {
 
         Object[] params = new Object[] {stockId};
         String sql = "SELECT TRANSACTION_DATE FROM STOCK_DAILY_TRANSACTION WHERE STOCK_ID = ? ";
-        return Yank.queryBeanList(sql, String.class, params);
+//        return Yank.queryBeanList(sql, Date.class, params);
+        return Yank.queryColumn(sql, "TRANSACTION_DATE", Date.class, params);
     }
+
 
     public static int[] insertBatch(List<StockDailyTransaction> sdtList) {
 

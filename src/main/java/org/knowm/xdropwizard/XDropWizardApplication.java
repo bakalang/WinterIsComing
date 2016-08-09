@@ -89,7 +89,7 @@ public class XDropWizardApplication extends Application<XDropWizardApplicationCo
     environment.lifecycle().manage(ym); // Assign the management of the object to the Service
     environment.jersey().register(new YankBookResource());
     environment.jersey().register(new FBResource());
-    environment.jersey().register(new JobUtils());
+    environment.jersey().register(new JobUtils(null));
 
     // TASKS ////////////////////////////
 

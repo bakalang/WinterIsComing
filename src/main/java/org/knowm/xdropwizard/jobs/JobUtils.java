@@ -10,6 +10,7 @@ import org.jsoup.select.Elements;
 import org.knowm.xdropwizard.business.*;
 import org.knowm.xdropwizard.constance.commonConstance;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -24,12 +25,20 @@ import java.util.List;
  */
 public class JobUtils implements commonConstance {
 
+//    private static final Logger log = LoggerFactory.getLogger(JobUtils.class);
     private Logger log = null;
+    public JobUtils(Logger log){
+        this.log = log;
+    }
+
     private static final DateTime now = new org.joda.time.DateTime();
 
-    public static String getStockMonthTransaction(String url, String stockId) {
+    public String getStockMonthTransaction(String url, String stockId) {
 
-        List<String> tmpList = StockDailyTransactionDAO.getStockDailyTransactionList(stockId);
+        List<Date> tmpList = StockDailyTransactionDAO.getStockDailyTransactionList(stockId);
+        if(null == tmpList){
+            log.info("missing tmpList");
+        }
         List<StockDailyTransaction> sdtList = new ArrayList<StockDailyTransaction>();
         StockDailyTransaction sdt = null;
         Document doc = null;
@@ -74,16 +83,16 @@ public class JobUtils implements commonConstance {
         }
 
         if (sdtList.size() >0) {
-//            System.out.println(">>>" + stockId + " , " + sdtList.size());
-//            for (StockDailyTransaction tmp : sdtList) {
-//                System.out.println(tmp.toString());
-//            }
+            log.info(">>>" + stockId + " , " + sdtList.size());
+            for (StockDailyTransaction tmp : sdtList) {
+                log.info(tmp.toString());
+            }
             StockDailyTransactionDAO.insertBatch(sdtList);
         }
         return null;
     }
 
-    public static Document jsoupRetry( String url) throws IOException {
+    public Document jsoupRetry( String url) throws IOException {
 
         Document doc = null;
         int i =0;
@@ -104,7 +113,7 @@ public class JobUtils implements commonConstance {
 
     }
 
-    public static String getSecurityCompany(String security, Logger log) {
+    public String startSecurityCompany(String security) {
 
         String url = SECURITY_MAP.get(security);
         try {
@@ -119,12 +128,14 @@ public class JobUtils implements commonConstance {
             String tmpDate = newsHeadlines.select(".t11").text();
             String updateDate = now.getYear()+"/"+tmpDate.substring(tmpDate.length() - 5, tmpDate.length());
 
-            SecurityUpToDate utd = SecurityUpToDateDAO.getSecurityCurrentDate(security);
+            Date utd = SecurityUpToDateDAO.getSecurityCurrentDate(security);
 
-
-            if(!YYYYMMDD.parseDateTime(updateDate).toDate().after(utd.getSecurityCurrent())){
-                log.info(YYYYMMDD.parseDateTime(updateDate).toDate() +" "+utd.getSecurityCurrent());
-                return null;
+            if(null != utd) {
+                log.info(YYYYMMDD.parseDateTime(updateDate).toDate() + " " + utd);
+                if (!YYYYMMDD.parseDateTime(updateDate).toDate().after(utd)) {
+                    log.info("skipped "+security);
+                    return null;
+                }
             }
 
             Iterator<Element> rr = newsHeadlines.select("tr").iterator();
@@ -159,8 +170,8 @@ public class JobUtils implements commonConstance {
                         i++;
 
                         if (i == 3) {
-                            log.trace("insert =>" + s.toString());
-                            SecurityTradeDAO.insertSecurityTrade(s);
+                            log.info("insert =>" + s.toString());
+//                            SecurityTradeDAO.insertSecurityTrade(s);
                         }
                     }
                     //check stock transaction
@@ -174,9 +185,9 @@ public class JobUtils implements commonConstance {
             }
 
             if(null == utd ) {
-                SecurityUpToDateDAO.insertSecurityCurrentDate(security, YYYYMMDD.print(now));
+                SecurityUpToDateDAO.insertSecurityCurrentDate(security, now.toDate());
             }else{
-                SecurityUpToDateDAO.updateSecurityCurrentDate(security, YYYYMMDD.print(now));
+                SecurityUpToDateDAO.updateSecurityCurrentDate(security, now.toDate());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -185,7 +196,7 @@ public class JobUtils implements commonConstance {
         return null;
     }
 
-    private static BigDecimal getBigDecimal(String tmp, int scale) {
+    private BigDecimal getBigDecimal(String tmp, int scale) {
         tmp = tmp.replace(String.valueOf((char) 160), " ");
         tmp = tmp.replace("%", "");
         tmp = tmp.replace(",", "");
@@ -201,7 +212,7 @@ public class JobUtils implements commonConstance {
         return b;
     }
 
-    private static String getC(String text) {
+    private String getC(String text) {
         String rtn = null;
         for (int i = 0; i < text.length(); i++) {
             if (!Character.toString(text.charAt(i)).matches("[a-zA-Z0-9]"))
@@ -210,7 +221,7 @@ public class JobUtils implements commonConstance {
         return rtn;
     }
 
-    private static String getTransationURI(int year, int month, String stockId) {
+    private String getTransationURI(int year, int month, String stockId) {
         String formatStr = "%02d";
         String monthString = String.format(formatStr, month);
 
@@ -224,14 +235,14 @@ public class JobUtils implements commonConstance {
     }
 
 
-    private static String toCommonEra(String s) {
+    private String toCommonEra(String s) {
         String tmpYear = s.substring(0, 3).trim();
         String cYear = String.valueOf(Integer.valueOf(tmpYear)+1911);
         return cYear+s.substring(3, s.length());
     }
 
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
 //        System.out.println(getC("3576新日光"));
 
         getStockMonthTransaction(getTransationURI(2016, 07, "2882"), "2882");
