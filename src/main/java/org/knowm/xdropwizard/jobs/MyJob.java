@@ -16,26 +16,14 @@
  */
 package org.knowm.xdropwizard.jobs;
 
-import org.joda.time.DateTime;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.knowm.sundial.Job;
-import org.knowm.sundial.annotations.CronTrigger;
 import org.knowm.sundial.exceptions.JobInterruptException;
-import org.knowm.xdropwizard.business.SecurityTrade;
 import org.knowm.xdropwizard.constance.commonConstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
-import java.util.Iterator;
 
 public class MyJob extends Job implements commonConstance  {
-
     private final Logger log = LoggerFactory.getLogger(MyJob.class);
-
 
     @Override
     public void doRun() throws JobInterruptException {
@@ -44,7 +32,9 @@ public class MyJob extends Job implements commonConstance  {
             log.info("do security "+sid+", "+SECURITY_MAP.get(sid));
             JobUtils j = new JobUtils(log);
             j.startSecurityCompany(sid);
+//            j.updateDate();
         }
+
     }
 }
 

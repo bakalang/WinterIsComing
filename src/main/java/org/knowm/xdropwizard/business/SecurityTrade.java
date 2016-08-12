@@ -12,6 +12,7 @@ public class SecurityTrade {
     private Date tradeDate;
     private BigDecimal buy;
     private BigDecimal sell;
+    private BigDecimal close;
     private BigDecimal subtraction;
 
 
@@ -63,6 +64,14 @@ public class SecurityTrade {
         this.subtraction = subtraction;
     }
 
+    public BigDecimal getClose() {
+        return close;
+    }
+
+    public void setClose(BigDecimal close) {
+        this.close = close;
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(securityId).append("|");
@@ -70,6 +79,7 @@ public class SecurityTrade {
         sb.append(tradeDate).append("|");
         sb.append(buy).append("|");
         sb.append(sell).append("|");
+        sb.append(close).append("|");
         sb.append(subtraction);
         return sb.toString();
     }

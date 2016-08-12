@@ -28,7 +28,7 @@ public class SecurityUpToDateDAO {
     public static int updateSecurityCurrentDate(String securityId, Date date) {
 
         Object[] params = new Object[] {date, securityId};
-        String SQL = "UPDATE SECURITY_CURRENT SET SECURITY_CURRENT_DATE = ? WHERE SECURITY_ID = ?";
+        String SQL = "UPDATE SECURITY_UP_TO_DATE SET SECURITY_CURRENT = ? WHERE SECURITY_ID = ?";
         return Yank.execute(SQL, params);
     }
 }

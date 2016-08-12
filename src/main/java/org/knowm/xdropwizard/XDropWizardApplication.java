@@ -31,6 +31,7 @@ import org.knowm.xdropwizard.jobs.JobUtils;
 import org.knowm.xdropwizard.manager.YankManager;
 import org.knowm.xdropwizard.resources.FBResource;
 import org.knowm.xdropwizard.resources.HelloWorldResource;
+import org.knowm.xdropwizard.resources.StockResource;
 import org.knowm.xdropwizard.resources.YankBookResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +90,8 @@ public class XDropWizardApplication extends Application<XDropWizardApplicationCo
     environment.lifecycle().manage(ym); // Assign the management of the object to the Service
     environment.jersey().register(new YankBookResource());
     environment.jersey().register(new FBResource());
+    environment.jersey().register(new StockResource());
+
     environment.jersey().register(new JobUtils(null));
 
     // TASKS ////////////////////////////
