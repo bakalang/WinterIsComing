@@ -10,6 +10,7 @@ public class SecurityTrade {
     private String securityId;
     private String stockId;
     private Date tradeDate;
+    private long tradeDateMinSec;
     private BigDecimal buy;
     private BigDecimal sell;
     private BigDecimal close;
@@ -70,6 +71,14 @@ public class SecurityTrade {
 
     public void setClose(BigDecimal close) {
         this.close = close;
+    }
+
+    public long getTradeDateMinSec() {
+        return tradeDateMinSec;
+    }
+
+    public void setTradeDateMinSec(long tradeDateMinSec) {
+        this.tradeDateMinSec = tradeDateMinSec;
     }
 
     public String toString() {
