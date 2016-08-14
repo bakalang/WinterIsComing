@@ -1,6 +1,7 @@
 package org.knowm.xdropwizard.resources;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.base.Optional;
 import io.dropwizard.jersey.caching.CacheControl;
 import org.json.JSONObject;
 import org.knowm.xdropwizard.business.SecurityTrade;
@@ -10,6 +11,7 @@ import org.knowm.xdropwizard.utils.ResponseFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -27,9 +29,11 @@ public class StockResource {
     @Timed
     @CacheControl(noCache = true)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<SecurityTrade> getGroupPerformance() {
+    public List<SecurityTrade> getGroupPerformance(@QueryParam("stockId") Optional<String> stockId) {
 
-        List<SecurityTrade> stList = SecurityTradeDAO.selectSecurityTradeByStockIdAndSecurityId("1605", "9800");
+        String reqStockId = stockId.orNull();
+
+        List<SecurityTrade> stList = SecurityTradeDAO.selectSecurityTradeByStockIdAndSecurityId(reqStockId, "9800");
         for(SecurityTrade st : stList){
             st.setTradeDateMinSec(st.getTradeDate().getTime());
         }
