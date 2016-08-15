@@ -18,24 +18,27 @@
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-nvd3/1.0.5/angular-nvd3.min.js"></script>-->
 
     <script src="/js/nvd3-chart3.js"></script>
-    <script src="/js/nvd3-chart3-2.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/chart.css" />
+
   </head>
 
     <body>
+
         <div ng-app="plunker">
-            <div ng-controller="stockCtrl">
+            <div ng-controller="stockCtrl" class="left">
                 <nvd3 options="options" data="appChartData" ng-init="initChartData(1605)" ></nvd3>
             </div>
-            <div ng-controller="stockCtrl">
+
+            <div ng-controller="stockCtrl" >
                 <nvd3 options="options" data="appChartData" ng-init="initChartData(2317)" ></nvd3>
             </div>
-        </div>
 
-        <div ng-app="name">
             <div ng-controller="nameCtrl">
                 <sayhello/>
             </div>
         </div>
+
+
 
 
     </body>

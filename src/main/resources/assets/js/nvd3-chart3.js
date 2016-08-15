@@ -1,4 +1,20 @@
 var app = angular.module('plunker', ['nvd3']);
+
+app.controller('nameCtrl', function($scope) {
+    $scope.name = 'Johnson';
+});
+
+app.directive('sayhello', function() {
+    return {
+        restrict: 'E',
+//        template: '<div>Hello {{ name }}</div>',
+        template: '<div ng-controller="stockCtrl" >'
+                 +'  <nvd3 options="options" data="appChartData" ng-init="initChartData(2317)" ></nvd3>'
+                 +'</div>',
+        replace: true
+    };
+});
+
 app.controller('stockCtrl', function($scope, $http) {
     $scope.options = {
         chart: {

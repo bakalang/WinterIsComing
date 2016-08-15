@@ -27,8 +27,20 @@ public class SecurityTradeDAO {
     public static List<SecurityTrade> selectSecurityTradeByStockIdAndSecurityId(String stockId, String securityId) {
 
         Object[] params = new Object[] {stockId, securityId};
-        String SQL = "SELECT * FROM SECURITY_TRADE where STOCK_ID=? AND SECURITY_ID=? ";
+        String SQL = "SELECT * FROM SECURITY_TRADE WHERE STOCK_ID=? AND SECURITY_ID=? ";
         return Yank.queryBeanList(SQL, SecurityTrade.class, params);
+    }
+
+    public static List<Object[]> selectTopSecurityTrade(String securityId, String top) {
+
+        Object[] params = new Object[] {securityId, top};
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT COUNT(STOCK_ID) AS CNT, SECURITY_ID, STOCK_ID ");
+        sb.append(" FROM SECURITY_TRADE ");
+        sb.append(" WHERE SECURITY_ID =? ");
+        sb.append(" GROUP BY SECURITY_ID, STOCK_ID ORDER BY CNT DESC ");
+        sb.append(" LIMIT ? ");
+        return Yank.queryObjectArrays(sb.toString(), params);
     }
 
     public static int updateClose(Date date, String stockId, BigDecimal close) {
