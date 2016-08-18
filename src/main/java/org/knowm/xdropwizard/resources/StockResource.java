@@ -44,17 +44,17 @@ public class StockResource {
     }
 
 
-    @Path("top5")
+    @Path("top")
     @GET
     @Timed
     @CacheControl(noCache = true)
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, List<SecurityTrade>> getTop5(@QueryParam("securityId") Optional<String> securityId) {
+    public Map<String, List<SecurityTrade>> getTop(@QueryParam("securityId") Optional<String> securityId) {
 
         Map<String, List<SecurityTrade>> rtnMap = new HashMap<String, List<SecurityTrade>>();
         String reqSecurityId = securityId.orNull();
 
-        List<Object[]> aa = SecurityTradeDAO.selectTopSecurityTrade(reqSecurityId, "10");
+        List<Object[]> aa = SecurityTradeDAO.selectTopSecurityTrade(reqSecurityId, "12");
         for(Object[] o : aa){
             String stockId = (String) o[2];
             List<SecurityTrade> stList = SecurityTradeDAO.selectSecurityTradeByStockIdAndSecurityId(stockId, reqSecurityId);

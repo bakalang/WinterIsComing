@@ -19,8 +19,8 @@ app.controller('stockCtrl', function($scope, $http) {
     $scope.options = {
         chart: {
             type: 'multiChart',
-            height: 150,
-            width: 400,
+            height: 200,
+            width: 300,
             margin : {
                 top: 20,
                 right: 45,
@@ -57,7 +57,7 @@ app.controller('stockCtrl', function($scope, $http) {
     };
 // Chart Data //////////////////////////////////////////////////////////////
 	
-	
+
   	$scope.initChartData = function(stockId) {
 		var path = '/service/nvd3data/st?stockId='+stockId
 
@@ -70,6 +70,30 @@ app.controller('stockCtrl', function($scope, $http) {
 		    console.log($scope.appChartData);
 		});
 	};
+
+    $scope.appChartTopData =[];
+	$scope.initChartTopData = function(securityId) {
+        var path = '/service/nvd3data/top?securityId='+securityId
+
+        $http.get(path).success(function(data) {
+//            console.log(data);
+            for (var key in data) {
+                var obj = [
+                    convertToChartFormat(data[key], 'buy', 'bar', 1),
+                    convertToChartFormat(data[key], 'sell', 'bar', 1),
+                    convertToChartFormat(data[key], 'close', 'line', 2)
+                ];
+                var temp = {
+                        key: key,
+                        value: obj
+                    };
+                $scope.appChartTopData.push(temp);
+            }
+
+//            console.log($scope.appChartTopData);
+
+        });
+    };
 
 //////////////////////////////////////////////////////////////////////
 
