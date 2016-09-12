@@ -73,7 +73,8 @@ angular.module('uiRouterSample.contacts', [
           // template will be inserted into the ui-view within this state's
           // parent's template; so the ui-view within contacts.html. This is the
           // most important thing to remember about templates.
-          templateUrl: '../contacts.list.html'
+          templateUrl: '../contacts.list.html',
+
         })
 
         ///////////////////////
