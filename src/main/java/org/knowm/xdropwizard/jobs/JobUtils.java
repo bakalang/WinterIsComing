@@ -30,35 +30,6 @@ public class JobUtils implements commonConstance {
 
     private static final DateTime now = new org.joda.time.DateTime();
 
-//    public void updateDate(){
-//        boolean again = true;
-//        while(again) {
-//            List<SecurityTrade> sList = SecurityTradeDAO.select10();
-//
-//            if(sList != null) {
-//                for (SecurityTrade st : sList) {
-//                    List<BigDecimal> close = StockDailyTransactionDAO.selectClose(st.getTradeDate(), st.getStockId());
-//                    if(close.size() != 0) {
-//                        int aa = SecurityTradeDAO.updateClose(st.getTradeDate(), st.getStockId(), close.get(0));
-//                        System.out.println(close.toString()+", "+aa);
-//                    }else{
-//                        System.out.println(st.getTradeDate()+", "+st.getStockId()+" close not found");
-//                    }
-//                }
-//            }else{
-//                again = false;
-//            }
-//
-//
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        System.out.println("ok");
-//    }
-
 
     public BigDecimal getStockMonthTransaction(String url, String stockId, String dateString) {
         BigDecimal rtnClose = null;
@@ -67,7 +38,6 @@ public class JobUtils implements commonConstance {
         if(null == tmpList){
             log.info("missing tmpList");
         }
-//        List<StockDailyTransaction> sdtList = new ArrayList<StockDailyTransaction>();
         StockDailyTransaction sdt = null;
         Document doc = null;
         try {
@@ -174,7 +144,6 @@ public class JobUtils implements commonConstance {
                     if (dd_e.className().startsWith("t4")) {
                         stockId = getC(Jsoup.parse(dd_e.html()).text());
                         s = new SecurityTrade();
-//                        s.setTradeDate(now.toDate());
                         s.setTradeDate(YYYYMMDD.parseDateTime(updateDate).toDate());
                         s.setSecurityId(security);
                         s.setStockId(stockId);
@@ -206,6 +175,7 @@ public class JobUtils implements commonConstance {
                     //http://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_2882.tw&d=20160714&json=1
                     //http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/genpage/Report201607/201607_F3_1_8_2882.php?STK_NO=2882&myear=2016&mmon=07
                     //http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/genpage/Report201607/201607_F3_1_8_2882.php?STK_NO=2882&myear=2016&mmon=07
+                    //http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/genpage/Report201609/201609_F3_1_8_2882.php?STK_NO=2882&myear=2016&mmon=09
                 }
             }
 

@@ -45,22 +45,23 @@ app.controller('stockCtrl', function($scope, $http) {
 // Chart Data //////////////////////////////////////////////////////////////
 	
 
-  	$scope.initChartData = function(stockId) {
-		var path = '/service/nvd3data/st?stockId='+stockId
-
-		$http.get(path).success(function(data) {
-            $scope.appChartData = [
-               convertToChartFormat(data, 'buy', 'bar', 1),
-               convertToChartFormat(data, 'sell', 'bar', 1),
-               convertToChartFormat(data, 'close', 'line', 2)
-            ];
-		    console.log($scope.appChartData);
-		});
-	};
+//  	$scope.initChartData = function(stockId) {
+//		var path = '/service/nvd3data/st?stockId='+stockId
+//
+//		$http.get(path).success(function(data) {
+//            $scope.appChartData = [
+//               convertToChartFormat(data, 'buy', 'bar', 1),
+//               convertToChartFormat(data, 'sell', 'bar', 1),
+//               convertToChartFormat(data, 'close', 'line', 2)
+//            ];
+//		    console.log($scope.appChartData);
+//		});
+//	};
 
     $scope.appChartTopData =[];
-	$scope.initChartTopData = function(securityId) {
-        var path = '/service/nvd3data/top?securityId='+securityId
+	$scope.setChartTopData = function() {
+	    $scope.appChartTopData.length = 0;
+        var path = '/service/nvd3data/top?securityId='+$scope.securityId+'&days='+$scope.days
 
         $http.get(path).success(function(data) {
 //            console.log(data);
@@ -77,7 +78,7 @@ app.controller('stockCtrl', function($scope, $http) {
                 $scope.appChartTopData.push(temp);
             }
 
-//            console.log($scope.appChartTopData);
+            console.log($scope.appChartTopData);
 
         });
     };
@@ -113,19 +114,3 @@ function convertToChartFormat(data, seriesName, type, yAxis){
     }
 	return returnValue;
 };
-
-
-//app.controller('nameCtrl', function($scope) {
-//    $scope.name = 'Johnson';
-//});
-//
-//app.directive('sayhello', function() {
-//    return {
-//        restrict: 'E',
-////        template: '<div>Hello {{ name }}</div>',
-//        template: '<div ng-controller="stockCtrl" >'
-//                 +'  <nvd3 options="options" data="appChartData" ng-init="initChartData(2317)" ></nvd3>'
-//                 +'</div>',
-//        replace: true
-//    };
-//});

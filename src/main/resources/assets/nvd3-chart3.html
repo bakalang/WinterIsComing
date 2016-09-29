@@ -22,20 +22,22 @@
 
   </head>
 
-    <body ng-app="plunker">
+    <body ng-app="plunker" ng-controller="stockCtrl">
 
-        <!--<div class="left">-->
-            <div ng-controller="stockCtrl" ng-init="initChartTopData(9800)" >
-                <div ng-repeat="dataArray in appChartTopData">
-                    <div ng-class="{'left': $index % 3 != 2}">
-                        {{dataArray.key}}
-                        <nvd3 options="options" data="dataArray.value" ></nvd3>
-                    </div>
+        <div>
+            <input type="text" ng-model="securityId" ng-init="securityId ='9800'">
+            <input type="text" ng-model="days" ng-init="days ='30'">
+            <button ng-click="setChartTopData()">drow</button>
+        </div>
+
+        <div ng-init="setChartTopData()" >
+            <div ng-repeat="dataArray in appChartTopData">
+                <div ng-class="{'left': $index % 3 != 2}">
+                    {{dataArray.key}}
+                    <nvd3 options="options" data="dataArray.value" ></nvd3>
                 </div>
             </div>
-            <!--<div ng-controller="nameCtrl">-->
-                <!--<sayhello/>-->
-            <!--</div>-->
+        </div>
     </body>
 
 
